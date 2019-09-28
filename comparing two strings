@@ -1,0 +1,61 @@
+.model small
+display macro msg
+lea dx,msg
+mov ah,09h
+int 21h
+endm
+.data
+msg1 db 0dh,0ah,"enter string 1:$"
+msg2 db 0dh,0ah,"enter string 2:$"
+msg3 db 0dh,0ah,"the strings are equal..$"
+msg4 db 0dh,0ah,"the strings are not equal..$"
+str1 db 10h dup(0)
+str2 db 10h dup(0)
+len dw 0
+.code
+mov ax,@data
+mov ds,ax
+mov si,00h
+mov di,00h
+display msg1
+e2:mov ah,01h
+   int 21h
+   cmp al,0dh
+   jz e1
+   mov str1[si],al
+   inc si
+   inc len
+   jmp e2
+
+e1:display msg2
+   
+   mov cx,len
+e3:mov ah,01h
+    int 21h
+    cmp al,0dh
+    jz compare
+    mov str2[di],al
+    inc di
+    dec cx
+    cmp cx,00h
+    jnz e3
+    mov si,00h
+    mov di,00h
+compare:mov al,str1[si]
+        mov bl,str2[di]
+        cmp al,bl
+        jnz next3
+        loop compare
+        jmp next2
+next2:display msg3
+      mov ah,4ch
+      int 21h
+next3:display msg4
+      mov ah,4ch
+      int 21h
+end
+      
+
+
+
+
